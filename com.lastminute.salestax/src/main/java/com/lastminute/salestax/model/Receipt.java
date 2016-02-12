@@ -1,9 +1,10 @@
 package com.lastminute.salestax.model;
 
 import java.io.Serializable;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 public class Receipt implements Serializable {
 
@@ -47,14 +48,14 @@ public class Receipt implements Serializable {
 	public String print() {
 		StringBuilder sbInput = new StringBuilder();
 		StringBuilder sbOutput = new StringBuilder();
-		String pattern = "#0.##";
-		DecimalFormat formatter = new DecimalFormat( pattern );
+		NumberFormat formatter = NumberFormat.getInstance( Locale.ITALIAN );
+		formatter.setMinimumFractionDigits( 2 );
 		for ( SalesLineItem s : salesLineItems ) {
 			sbInput.append( s.getQuantity() );
 			sbInput.append( " " );
 			sbInput.append( s.getItem().getDescription() );
 			sbInput.append( " " );
-			String uniPrice = formatter.format( s.getItem().getUnitPrice().getAmount().doubleValue() );
+			String uniPrice = formatter.format( s.getItem().getUnitPrice().getAmount() );
 			sbInput.append( uniPrice );
 			sbInput.append( "\n" );
 
@@ -62,17 +63,17 @@ public class Receipt implements Serializable {
 			sbOutput.append( " " );
 			sbOutput.append( s.getItem().getDescription() );
 			sbOutput.append( " " );
-			String price = formatter.format( s.getPrice().getAmount().doubleValue() );
+			String price = formatter.format( s.getPrice().getAmount() );
 			sbOutput.append( price );
 			sbOutput.append( "\n" );
 
 		}
 		sbOutput.append( "\n" );
 		sbOutput.append( "Sales Taxes: " );
-		String taxFormat = formatter.format( this.tax.getAmount().doubleValue() );
+		String taxFormat = formatter.format( this.tax.getAmount() );
 		sbOutput.append( taxFormat );
 		sbOutput.append( "\n" );
-		String totalFormat = formatter.format( this.total.getAmount().doubleValue() );
+		String totalFormat = formatter.format( this.total.getAmount());
 		sbOutput.append( "Total: " );
 		sbOutput.append( totalFormat );
 		sbInput.append( "-------------" );
